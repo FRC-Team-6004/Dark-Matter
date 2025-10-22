@@ -9,6 +9,10 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,8 +44,23 @@ public class RobotContainer {
 
     private final Pneumatics pneumatics = new Pneumatics();
 
+    private AddressableLED leds;
+    private AddressableLEDBuffer ledBuffer;
+
     public RobotContainer() {
         configureBindings();
+
+        leds = new AddressableLED(0);
+        ledBuffer = new AddressableLEDBuffer(350);
+        leds.setLength(ledBuffer.getLength());
+        leds.setData(ledBuffer);
+        leds.start();
+
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 255, 255);
+        }
+        leds.setData(ledBuffer);
+
     }
 
     private void configureBindings() {
@@ -87,4 +106,19 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
     }
+    int ledc = 0;
+    public void periodic() {
+        BlueAnimation();
+    }
+
+    public void BlueAnimation() {
+        double stren = ((Math.sin((1.0 * ledc) / 20)) * 25) + 40;
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, (int) (stren / 5), 0, (int) (stren));
+        }
+        ledc += 1;
+        System.out.println("ledc = " + ledc + "   stren = " +  stren);
+        leds.setData(ledBuffer);
+    }
+    
 }
