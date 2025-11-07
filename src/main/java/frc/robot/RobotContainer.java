@@ -24,6 +24,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.canon1;
+import frc.robot.subsystems.canon2;
+import frc.robot.subsystems.canon3;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -43,6 +46,10 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final Pneumatics pneumatics = new Pneumatics();
+
+    private final canon1 canone = new canon1();
+    private final canon2 cantwo = new canon2();
+    private final canon3 canthree = new canon3();
 
     private AddressableLED leds;
     private AddressableLEDBuffer ledBuffer;
@@ -69,9 +76,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * .4) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * .4) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * .6) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -92,13 +99,21 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid1(true)));
-        joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid2(true)));
-        joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid3(true)));
+        //joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid1(true)));
+        //joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid2(true)));
+        //joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid3(true)));
 
-        joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid1(false)));
-        joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid2(false)));
-        joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid3(false)));
+        //joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid1(false)));
+        //joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid2(false)));
+        //joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid3(false)));
+
+        joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canone.openSol(-1)));
+        joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> cantwo.openSol(-1)));
+        joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canthree.openSol(-1)));
+
+        joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canone.openSol(0)));
+        joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> cantwo.openSol(0)));
+        joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canthree.openSol(0)));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -112,12 +127,12 @@ public class RobotContainer {
     }
 
     public void BlueAnimation() {
-        double stren = ((Math.sin((1.0 * ledc) / 20)) * 25) + 40;
+        double stren = ((Math.sin((1.0 * ledc) / 30)) * 25) + 40;
         for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, (int) (stren / 5), 0, (int) (stren));
+            ledBuffer.setRGB(i, 0, 0, (int) (stren));
         }
         ledc += 1;
-        System.out.println("ledc = " + ledc + "   stren = " +  stren);
+        //System.out.println("ledc = " + ledc + "   stren = " +  stren);
         leds.setData(ledBuffer);
     }
     
