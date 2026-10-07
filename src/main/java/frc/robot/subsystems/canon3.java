@@ -20,7 +20,7 @@ public class canon3 extends SubsystemBase {
     public canon3() {
 
     // Set up the arm motor as a brushed motor
-    canon3 = new SparkMax(17, MotorType.kBrushed  );
+    canon3 = new SparkMax(52, MotorType.kBrushed  );
 
 
     // Set can timeout. Because this project only sets parameters once on
