@@ -37,7 +37,7 @@ public class canon1 extends SubsystemBase {
     coralConfig.voltageCompensation(10);
     //coralConfig.smartCurrentLimit(canon1const.CorAl_CUR_LMT);
     coralConfig.idleMode(IdleMode.kBrake);
-    canon1.configure(coralConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    canon1.configure(coralConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     @Override

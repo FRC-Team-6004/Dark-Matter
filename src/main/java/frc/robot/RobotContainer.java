@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CanonSystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.canon1;
@@ -47,26 +48,34 @@ public class RobotContainer {
 
     private final Pneumatics pneumatics = new Pneumatics();
 
-    private final canon1 canone = new canon1();
-    private final canon2 cantwo = new canon2();
-    private final canon3 canthree = new canon3();
+    private final CanonSystem canonSystem;
+
+    // private final canon1 canone;
+    // private final canon2 cantwo;
+    // private final canon3 canthree;
 
     private AddressableLED leds;
     private AddressableLEDBuffer ledBuffer;
 
     public RobotContainer() {
+        // canone = new canon1();
+        // cantwo = new canon2();
+        // canthree = new canon3();
+
+        canonSystem = new CanonSystem();
+
         configureBindings();
 
-        leds = new AddressableLED(0);
-        ledBuffer = new AddressableLEDBuffer(350);
-        leds.setLength(ledBuffer.getLength());
-        leds.setData(ledBuffer);
-        leds.start();
+        // leds = new AddressableLED(0);
+        // ledBuffer = new AddressableLEDBuffer(350);
+        // leds.setLength(ledBuffer.getLength());
+        // leds.setData(ledBuffer);
+        // leds.start();
 
-        for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 255, 255, 255);
-        }
-        leds.setData(ledBuffer);
+        // for (int i = 0; i < ledBuffer.getLength(); i++) {
+        //     ledBuffer.setRGB(i, 255, 255, 255);
+        // }
+        // leds.setData(ledBuffer);
 
     }
 
@@ -107,13 +116,21 @@ public class RobotContainer {
         //joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid2(false)));
         //joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid3(false)));
 
-        joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canone.openSol(-1)));
-        joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> cantwo.openSol(-1)));
-        joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canthree.openSol(-1)));
+        // joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canone.openSol(-1)));
+        // joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> cantwo.openSol(-1)));
+        // joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canthree.openSol(-1)));
 
-        joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canone.openSol(0)));
-        joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> cantwo.openSol(0)));
-        joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canthree.openSol(0)));
+        // joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canone.openSol(0)));
+        // joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> cantwo.openSol(0)));
+        // joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canthree.openSol(0)));
+
+        joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonOne(1)));
+        joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonTwo(1)));
+        joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonThree(1)));
+
+        joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonOne(0)));
+        joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonTwo(0)));
+        joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonThree(0)));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -123,7 +140,7 @@ public class RobotContainer {
     }
     int ledc = 0;
     public void periodic() {
-        BlueAnimation();
+        // BlueAnimation();
     }
 
     public void BlueAnimation() {
