@@ -12,70 +12,47 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CanonSystem;
+import frc.robot.subsystems.CannonSystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Pneumatics;
-import frc.robot.subsystems.canon1;
-import frc.robot.subsystems.canon2;
-import frc.robot.subsystems.canon3;
+import frc.robot.subsystems.CannonSystem.cannons;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    // Modules
+    private final Telemetry                 logger          = new Telemetry(MaxSpeed);
+    private final CommandXboxController     joystick        = new CommandXboxController(0);
+    private final CommandSwerveDrivetrain   drivetrain      = TunerConstants.createDrivetrain();
+    private final CannonSystem              cannonSystem    = new CannonSystem();
+    //private final AddressableLED            leds            = new AddressableLED(0);
+    //private final AddressableLEDBuffer      ledBuffer       = new AddressableLEDBuffer(350);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
-    private final Pneumatics pneumatics = new Pneumatics();
-
-    private final CanonSystem canonSystem;
-
-    // private final canon1 canone;
-    // private final canon2 cantwo;
-    // private final canon3 canthree;
-
-    private AddressableLED leds;
-    private AddressableLEDBuffer ledBuffer;
+    private int ledCount = 0;
 
     public RobotContainer() {
-        // canone = new canon1();
-        // cantwo = new canon2();
-        // canthree = new canon3();
-
-        canonSystem = new CanonSystem();
-
         configureBindings();
 
-        // leds = new AddressableLED(0);
-        // ledBuffer = new AddressableLEDBuffer(350);
-        // leds.setLength(ledBuffer.getLength());
-        // leds.setData(ledBuffer);
-        // leds.start();
+        /*
+        // Init LEDs
+        leds.setLength(ledBuffer.getLength());
+        leds.setData(ledBuffer);
+        leds.start();
 
-        // for (int i = 0; i < ledBuffer.getLength(); i++) {
-        //     ledBuffer.setRGB(i, 255, 255, 255);
-        // }
-        // leds.setData(ledBuffer);
+        for (int i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, 255, 255, 255);
+        }
+        leds.setData(ledBuffer);*/
 
     }
 
@@ -107,50 +84,28 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        //joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid1(true)));
-        //joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid2(true)));
-        //joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> pneumatics.setSolenoid3(true)));
 
-        //joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid1(false)));
-        //joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid2(false)));
-        //joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> pneumatics.setSolenoid3(false)));
-
-        // joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canone.openSol(-1)));
-        // joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> cantwo.openSol(-1)));
-        // joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canthree.openSol(-1)));
-
-        // joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canone.openSol(0)));
-        // joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> cantwo.openSol(0)));
-        // joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canthree.openSol(0)));
-
-        joystick.povRight().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonOne(1)));
-        joystick.povUp().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonTwo(1)));
-        joystick.povLeft().and(joystick.a()).onTrue(new InstantCommand(() -> canonSystem.setCanonThree(1)));
-
-        joystick.povRight().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonOne(0)));
-        joystick.povUp().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonTwo(0)));
-        joystick.povLeft().and(joystick.a()).onFalse(new InstantCommand(() -> canonSystem.setCanonThree(0)));
+        // Shoot commands using the POV and A button
+        joystick.povRight().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.rightCannon));
+        joystick.povUp().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.middleCannon));
+        joystick.povLeft().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.leftCannon));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
-    }
-    int ledc = 0;
     public void periodic() {
-        // BlueAnimation();
+        //BlueAnimation();
     }
 
+    /*
     public void BlueAnimation() {
-        double stren = ((Math.sin((1.0 * ledc) / 30)) * 25) + 40;
+        double stren = ((Math.sin((1.0 * ledCount) / 30)) * 25) + 40;
         for (int i = 0; i < ledBuffer.getLength(); i++) {
             ledBuffer.setRGB(i, 0, 0, (int) (stren));
         }
-        ledc += 1;
+        ledCount += 1;
         //System.out.println("ledc = " + ledc + "   stren = " +  stren);
         leds.setData(ledBuffer);
-    }
+    }*/
     
 }
