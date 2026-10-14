@@ -80,6 +80,10 @@ public class ShootCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        if (interrupted) {
+            m_canonSystem.closeCannon(m_activeCannon);
+        }
+        m_canonSystem.stopAll();
         System.out.println("end");
     }
 
