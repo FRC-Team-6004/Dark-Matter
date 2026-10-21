@@ -20,7 +20,7 @@ public class constants {
         public static final double CLOSE_VOLTAGE_DUTY = -1;
 
         public static final double PULSE_TIME = 1.0 / 8;
-        public static final double HOLD_TIME = 1.0 / 8 r;
+        public static final double HOLD_TIME = 1.0 / 8;
 
         public static final int LEFT_CANNON_CHANNEL = 7;
         public static final int RIGHT_CANNON_CHANNEL = 9;
