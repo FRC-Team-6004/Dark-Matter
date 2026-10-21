@@ -15,37 +15,16 @@ public class constants {
    
       
 
-      public static final class canon1const {
-        public static final int CorAl_MAIN = 15;             //PWM
-        public static final int CorAl_CUR_LMT = 50;   //const
+      public static final class CannonConstants {
+        public static final double OPEN_VOLTAGE_DUTY = 1;
+        public static final double CLOSE_VOLTAGE_DUTY = -1;
 
-        public static final double CorAl_MOTOR_VOLTAGE_COMP = 30;
-        public static final double CorAl_SPEED_DOWN = 0.5;
-        public static final double CorAl_SPEED_UP = -0.5;
-        public static final double CorAl_HOLD_DOWN = 0;
-        public static final double CorAl_HOLD_UP = 0;
-      }
+        public static final double PULSE_TIME = 1.0 / 8;
+        public static final double HOLD_TIME = 1.0 / 8 r;
 
-      public static final class canon2const {
-        public static final int CorAl_MAIN = 16;             //PWM
-        public static final int CorAl_CUR_LMT = 50;   //const
-
-        public static final double CorAl_MOTOR_VOLTAGE_COMP = 20;
-        public static final double CorAl_SPEED_DOWN = 0.5;
-        public static final double CorAl_SPEED_UP = -0.5;
-        public static final double CorAl_HOLD_DOWN = 0;
-        public static final double CorAl_HOLD_UP = 0;
-      }
-
-      public static final class canon3const {
-        public static final int CorAl_MAIN = 17;             //PWM
-        public static final int CorAl_CUR_LMT = 100;   //const
-
-        public static final double CorAl_MOTOR_VOLTAGE_COMP = 20;
-        public static final double CorAl_SPEED_DOWN = 0.5;
-        public static final double CorAl_SPEED_UP = -0.5;
-        public static final double CorAl_HOLD_DOWN = 0;
-        public static final double CorAl_HOLD_UP = 0;
+        public static final int LEFT_CANNON_CHANNEL = 7;
+        public static final int RIGHT_CANNON_CHANNEL = 9;
+        public static final int MIDDLE_CANNON_CHANNEL = 8;
       }
 
 

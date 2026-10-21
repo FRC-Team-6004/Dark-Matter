@@ -15,11 +15,10 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.constants.CannonConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CannonSystem;
+import frc.robot.subsystems.Cannon;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.CannonSystem.cannons;
 
 public class RobotContainer {
     private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -34,7 +33,9 @@ public class RobotContainer {
     private final Telemetry                 logger          = new Telemetry(MaxSpeed);
     private final CommandXboxController     joystick        = new CommandXboxController(0);
     private final CommandSwerveDrivetrain   drivetrain      = TunerConstants.createDrivetrain();
-    private final CannonSystem              cannonSystem    = new CannonSystem();
+    private final Cannon                    leftCannon      = new Cannon(CannonConstants.LEFT_CANNON_CHANNEL);
+    private final Cannon                    rightCannon     = new Cannon(CannonConstants.RIGHT_CANNON_CHANNEL);
+    private final Cannon                    middleCannon    = new Cannon(CannonConstants.MIDDLE_CANNON_CHANNEL);
     //private final AddressableLED            leds            = new AddressableLED(0);
     //private final AddressableLEDBuffer      ledBuffer       = new AddressableLEDBuffer(350);
 
@@ -86,9 +87,9 @@ public class RobotContainer {
 
 
         // Shoot commands using the POV and A button
-        joystick.povRight().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.rightCannon));
-        joystick.povUp().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.middleCannon));
-        joystick.povLeft().and(joystick.a()).onTrue(new ShootCommand(cannonSystem, cannons.leftCannon));
+        joystick.povRight().and(joystick.a()).onTrue(new ShootCommand(rightCannon));
+        joystick.povUp().and(joystick.a()).onTrue(new ShootCommand(middleCannon));
+        joystick.povLeft().and(joystick.a()).onTrue(new ShootCommand(leftCannon));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

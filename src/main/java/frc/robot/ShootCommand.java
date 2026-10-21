@@ -2,8 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CannonSystem;
-import frc.robot.subsystems.CannonSystem.cannons;
+import frc.robot.subsystems.Cannon;
+
+import static frc.robot.constants.CannonConstants.*;
 
 // Shoot command is a timed command, starts when a button is pressed
 // Sends a pulse to open solenoid   (PULSE_TIME)
@@ -11,11 +12,7 @@ import frc.robot.subsystems.CannonSystem.cannons;
 // Sends a pulse to close solenoid  (PULSE_TIME)
 // Ends the commands
 public class ShootCommand extends Command {
-    private final double PULSE_TIME = 0.5;
-    private final double HOLD_TIME = 1.0;
-
-    private final CannonSystem m_canonSystem;
-    private final cannons m_activeCannon;
+    private final Cannon m_activeCannon;
 
     private double stateStartTime;
 
@@ -28,11 +25,10 @@ public class ShootCommand extends Command {
     private State state = State.Open;
 
 
-    public ShootCommand(CannonSystem cannonSystem, cannons activeCannon) {
+    public ShootCommand(Cannon activeCannon) {
         System.out.println("Shoot command");
-        m_canonSystem = cannonSystem;
         m_activeCannon = activeCannon;
-        addRequirements(cannonSystem);
+        addRequirements(activeCannon);
     }
 
     private double stateDuration() {
@@ -49,7 +45,7 @@ public class ShootCommand extends Command {
         // Send initail pulse to open
         state = State.Open;
         stateStartTime = Timer.getFPGATimestamp();
-        m_canonSystem.openCannon(m_activeCannon);
+        m_activeCannon.openCannon();
     }
 
     @Override 
@@ -57,7 +53,7 @@ public class ShootCommand extends Command {
         // Check if the current state is done
         double now = Timer.getFPGATimestamp();
         if (now - stateStartTime > stateDuration()) {
-            m_canonSystem.stopAll();
+            m_activeCannon.neutralCannon();
             stateStartTime = now;
 
             // Transistion to the next state
@@ -67,7 +63,7 @@ public class ShootCommand extends Command {
                     break;
                 case Hold:
                     state = State.Close;
-                    m_canonSystem.closeCannon(m_activeCannon);
+                    m_activeCannon.closeCannon();
                     break;
                 case Close:
                     state = State.End;
@@ -81,9 +77,9 @@ public class ShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
-            m_canonSystem.closeCannon(m_activeCannon);
+            m_activeCannon.closeCannon();
         }
-        m_canonSystem.stopAll();
+        m_activeCannon.neutralCannon();
         System.out.println("end");
     }
 
